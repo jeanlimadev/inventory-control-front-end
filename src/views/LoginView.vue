@@ -12,7 +12,7 @@ interface User {
 }
 
 export default defineComponent({
-  name: "Login",
+  name: "TheLogin",
   components: { FormLogin },
   data() {
     return {
@@ -29,13 +29,16 @@ export default defineComponent({
         return;
       }
 
-      const response = await fetch("http://localhost:3333/users/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      })
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/users/auth`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           return data;

@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import "../assets/sass/components/login.scss";
 
 export default defineComponent({
   name: "FormLogin",

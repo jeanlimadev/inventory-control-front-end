@@ -1,0 +1,28 @@
+header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: rgb(163, 163, 163);
+  box-shadow: 0 0 5px black;
+
+  .link {
+    margin: 10px;
+    text-decoration: none;
+    color: black;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+    .logoff {
+      font-size: 10px;
+      margin: 10px;
+      text-decoration: none;
+      color: black;
+  
+      &:hover {
+        color: white;
+      }
+    }
+}
