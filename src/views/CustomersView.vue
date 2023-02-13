@@ -1,7 +1,23 @@
 <template>
   <main class="page">
-    <div>
-      <h1>Clientes</h1>
-    </div>
+    <h1>Clientes</h1>
+    <ListTable route="customers" :modal-items="modalItems" />
   </main>
 </template>
+
+<script lang="ts">
+import ListTable from "@/components/ListTable.vue";
+
+export default {
+  name: "CustomersView",
+  data() {
+    return {
+      modalItems: [
+        { name: "Nome", prop: "name", editable: true },
+        { name: "Nº Documento", prop: "document_number", editable: true },
+      ],
+    };
+  },
+  components: { ListTable },
+};
+</script>

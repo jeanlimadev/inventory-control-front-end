@@ -16,6 +16,10 @@ import { defineComponent } from "vue";
 import { PhPen, PhTrash } from "phosphor-vue";
 import Swal from "sweetalert2";
 
+import type { HtmlAttributes } from "csstype";
+import type { IModalItems } from "@/dtos/IModalItems";
+import type { IModalInput } from "@/dtos/IModalInput";
+
 export default defineComponent({
   name: "ProductOptions",
   data() {
@@ -35,7 +39,7 @@ export default defineComponent({
       required: true,
     },
     modalItems: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
@@ -49,15 +53,25 @@ export default defineComponent({
   },
   methods: {
     async openModal() {
-      const htmlModal = this.modalItems.reduce((acc, curr) => {
-        acc += `
-        <div>
-          <input type="text" class="swal2-input" id="item" name="${curr}" value="${
-          this.item[String(curr)]
-        }"/>
-        </div> `;
-        return acc;
-      }, "");
+      const htmlModal = this.modalItems.reduce(
+        (acc: HtmlAttributes, curr: IModalItems) => {
+          if (curr.editable) {
+            acc += `
+            <div class="modalItem">
+              <div class="modalInput">
+                <label>${curr.name}:</label>
+                <input type="text" class="swal2-input" id="item" name="${
+                  curr.name
+                }" accessKey="${curr.prop}" value="${
+              this.item[String(curr.prop)]
+            }"/>  
+              </div>
+            </div> `;
+          }
+          return acc;
+        },
+        ""
+      );
 
       Swal.fire({
         title: `Edição de Item`,
@@ -69,11 +83,22 @@ export default defineComponent({
         preConfirm: async () => {
           const htmlElements = document.querySelectorAll("#item");
 
-          const htmlElementsToArray = Array.from(htmlElements);
+          const htmlElementsToArray = Array.from(htmlElements) as IModalInput[];
+
+          const hasEmptyInput = htmlElementsToArray.find(
+            (element) => !element.value.trim()
+          );
+
+          if (hasEmptyInput) {
+            Swal.showValidationMessage(
+              `O campo ${hasEmptyInput.name} é obrigatório!`
+            );
+            return;
+          }
 
           const objectReturn = htmlElementsToArray.reduce((acc, curr) => {
             Object.assign(acc, {
-              [curr.name]: curr.value,
+              [curr.accessKey]: curr.value,
             });
 
             return acc;

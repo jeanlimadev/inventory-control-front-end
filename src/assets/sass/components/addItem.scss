@@ -1,0 +1,13 @@
+.addItem {
+  display: flex;
+  margin: 15px;
+  
+  a {
+    display: flex;
+    cursor: pointer;
+
+    span {
+      margin-left: 2px;
+    }
+  }
+}

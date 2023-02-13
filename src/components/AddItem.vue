@@ -1,7 +1,7 @@
 <template>
   <div class="addItem">
     <a @click="openModal">
-      <ph-plusCircle weight="duotone" size="20px" cursor="pointer" />
+      <ph-plus-circle weight="duotone" size="20px" cursor="pointer" />
       <span>Adicionar novo</span>
     </a>
   </div>
@@ -11,6 +11,12 @@
 import { PhPlusCircle } from "phosphor-vue";
 import Swal from "sweetalert2";
 import { defineComponent } from "vue";
+
+import type { IModalItems } from "@/dtos/IModalItems";
+import type { HtmlAttributes } from "csstype";
+import type { IModalInput } from "@/dtos/IModalInput";
+
+import "../assets/sass/components/addItem.scss";
 
 export default defineComponent({
   name: "AddItem",
@@ -24,6 +30,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    modalItems: {
+      type: Object,
+      required: true,
+    },
   },
   watch: {
     include(newValue) {
@@ -32,20 +42,22 @@ export default defineComponent({
   },
   methods: {
     async openModal() {
-      // const htmlModal = this.modalItems.reduce((acc, curr) => {
-      //   acc += `
-      //   <div>
-      //     <input type="text" class="swal2-input" id="item" name="${curr}" value="${
-      //     this.item[String(curr)]
-      //   }"/>
-      //   </div> `;
-      //   return acc;
-      // }, "");
+      const htmlModal = this.modalItems.reduce(
+        (acc: HtmlAttributes, curr: IModalItems) => {
+          if (curr.editable) {
+            acc += `
+            <div class="modalItem">
+              <div class="modalInput">
+                <label>${curr.name}:</label>
+                <input type="text" class="swal2-input" id="item" name="${curr.name}" accessKey="${curr.prop}"/>  
+              </div>
+            </div> `;
+          }
 
-      const htmlModal = `
-        <div>
-          <input type="text" class="swal2-input" id="item" placeholder="Nome" />
-        </div> `;
+          return acc;
+        },
+        ""
+      );
 
       Swal.fire({
         title: `Inclusão de Item`,
@@ -55,7 +67,28 @@ export default defineComponent({
         confirmButtonText: "Salvar",
         showLoaderOnConfirm: true,
         preConfirm: async () => {
-          const htmlElements = document.querySelector("#item");
+          const htmlElements = document.querySelectorAll("#item");
+
+          const htmlElementsToArray = Array.from(htmlElements) as IModalInput[];
+
+          const hasEmptyInput = htmlElementsToArray.find(
+            (element) => !element.value.trim()
+          );
+
+          if (hasEmptyInput) {
+            Swal.showValidationMessage(
+              `O campo ${hasEmptyInput.name} é obrigatório!`
+            );
+            return;
+          }
+
+          const objectReturn = htmlElementsToArray.reduce((acc, curr) => {
+            Object.assign(acc, {
+              [curr.accessKey]: curr.value,
+            });
+
+            return acc;
+          }, {});
 
           return await fetch(`${import.meta.env.VITE_API_URL}/${this.route}`, {
             method: "POST",
@@ -63,9 +96,7 @@ export default defineComponent({
               Authorization: `Bearer ${this.$cookies.get("token")}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              name: htmlElements.value,
-            }),
+            body: JSON.stringify(objectReturn),
           })
             .then((response) => response.json())
             .then((data) => {

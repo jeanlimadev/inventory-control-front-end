@@ -1,21 +1,23 @@
 <template>
-  <AddItem route="products" @included="onItemDataChange" />
+  <AddItem
+    :modal-items="modalItems"
+    :route="route"
+    @included="onItemDataChange"
+  />
   <table>
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Estoque</th>
+        <th v-for="item in modalItems" :key="item.name">{{ item.name }}</th>
         <th>Opções</th>
       </tr>
     </thead>
-    <tbody>
-      <tr :key="item.id" v-for="item in items">
-        <td>{{ item.name }}</td>
-        <td>{{ item.inventory }}</td>
+    <tbody :key="item.id" v-for="item in items">
+      <tr>
+        <td :key="name" v-for="name in modalItems">{{ item[name.prop] }}</td>
         <td>
           <OptionsIcons
             :item="item"
-            route="products"
+            :route="route"
             :modal-items="modalItems"
             @onItemDataChange="onItemDataChange"
           />
@@ -27,30 +29,34 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import type { PropType } from "vue";
 import axios from "axios";
 
 import OptionsIcons from "./OptionsIcons.vue";
 import AddItem from "./AddItem.vue";
 
-import "../assets/sass/components/listComponents.scss";
+import type { IModalItems } from "@/dtos/IModalItems";
 
-interface Product {
-  id: string;
-  name: string;
-  created_at: string;
-  inventory: number;
-}
+import "../assets/sass/components/listComponents.scss";
 
 export default defineComponent({
   name: "ListProducts",
   data() {
-    const items: Product[] = [];
-    const modalItems = ["name"];
+    const items: [] = [];
     return {
       items,
       showModal: false,
-      modalItems,
     };
+  },
+  props: {
+    route: {
+      type: String,
+      required: true,
+    },
+    modalItems: {
+      type: Array as PropType<IModalItems[]>,
+      required: true,
+    },
   },
   components: { OptionsIcons, AddItem },
   mounted() {
@@ -61,7 +67,7 @@ export default defineComponent({
       const token = this.$cookies.get("token");
 
       const response = await axios
-        .get(`${import.meta.env.VITE_API_URL}/products`, {
+        .get(`${import.meta.env.VITE_API_URL}/${this.route}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
