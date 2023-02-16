@@ -2,6 +2,7 @@
   <header>
     <nav>
       <RouterLink class="link" to="/">Home</RouterLink>
+      <RouterLink class="link" to="/purchases">Compras</RouterLink>
       <RouterLink class="link" to="/products">Produtos</RouterLink>
       <RouterLink class="link" to="/customers">Clientes</RouterLink>
       <RouterLink class="link" to="/suppliers">Fornecedores</RouterLink>

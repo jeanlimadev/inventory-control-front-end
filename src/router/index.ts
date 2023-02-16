@@ -2,6 +2,7 @@ import AuthGuard from "@/auth.guard";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ProductsView from "../views/ProductsView.vue";
+import PurchasesView from "../views/PurchasesView.vue";
 import CustomersView from "../views/CustomersView.vue";
 import SuppliersView from "../views/SuppliersView.vue";
 import UserLogin from "../views/LoginView.vue";
@@ -22,6 +23,12 @@ const router = createRouter({
       beforeEnter: AuthGuard,
       name: "home",
       component: HomeView,
+    },
+    {
+      path: "/purchases",
+      beforeEnter: AuthGuard,
+      name: "purchases",
+      component: PurchasesView,
     },
     {
       path: "/products",

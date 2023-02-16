@@ -1,5 +1,5 @@
 <template>
-  <AddItem
+  <AddPurchase
     :modal-items="modalItems"
     :route="route"
     @included="onItemDataChange"
@@ -10,6 +10,7 @@
         <th v-for="item in modalEditableItems" :key="item.name">
           {{ item.name }}
         </th>
+        <th>Total</th>
         <th>Opções</th>
       </tr>
     </thead>
@@ -18,8 +19,9 @@
         <td :key="name.name" v-for="name in modalEditableItems">
           {{ item[name.prop] }}
         </td>
+        <td>{{ item.amount * item.cost }}</td>
         <td>
-          <OptionsIcons
+          <PurchaseOptionsIcons
             :item="item"
             :route="route"
             :modal-items="modalItems"
@@ -36,15 +38,15 @@ import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import axios from "axios";
 
-import OptionsIcons from "./OptionsIcons.vue";
-import AddItem from "./AddItem.vue";
+import PurchaseOptionsIcons from "./PurchaseOptionsIcons.vue";
+import AddPurchase from "./AddPurchase.vue";
 
 import type { IModalItems } from "@/dtos/IModalItems";
 
 import "../assets/sass/components/listComponents.scss";
 
 export default defineComponent({
-  name: "ListProducts",
+  name: "ListSalesAndPurchases",
   data() {
     const items: any[] = [];
     const modalEditableItems = this.modalItems.filter((item) => item.editable);
@@ -64,7 +66,7 @@ export default defineComponent({
       required: true,
     },
   },
-  components: { OptionsIcons, AddItem },
+  components: { PurchaseOptionsIcons, AddPurchase },
   mounted() {
     this.getItemsList();
   },
@@ -73,7 +75,7 @@ export default defineComponent({
       const token = this.$cookies.get("token");
 
       const response = await axios
-        .get(`${import.meta.env.VITE_API_URL}/${this.route}`, {
+        .get(`${import.meta.env.VITE_API_URL}/${this.route}/filter`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
