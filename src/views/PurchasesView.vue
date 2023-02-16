@@ -1,6 +1,6 @@
 <template>
   <main class="page">
-    <h1>Vendas</h1>
+    <h1>Compras</h1>
     <ListSalesAndPurchases route="purchases" :modal-items="listItems" />
   </main>
 </template>

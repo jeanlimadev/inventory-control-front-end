@@ -17,7 +17,7 @@
       <span class="errorMessage">{{ errorMessage }}</span>
     </form>
     <div class="banner">
-      <img class="banner-login" src="../../images/banner-login.jpg" alt="" />
+      <img class="banner-login" src="/images/banner-login.jpg" alt="" />
     </div>
   </div>
 </template>
