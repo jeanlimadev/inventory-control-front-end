@@ -1,5 +1,5 @@
 import AuthGuard from "@/auth.guard";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import ProductsView from "../views/ProductsView.vue";
 import PurchasesView from "../views/PurchasesView.vue";
@@ -8,7 +8,7 @@ import SuppliersView from "../views/SuppliersView.vue";
 import UserLogin from "../views/LoginView.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/login",
@@ -23,14 +23,6 @@ const router = createRouter({
       beforeEnter: AuthGuard,
       name: "home",
       component: HomeView,
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      beforeEnter: AuthGuard,
-      name: "not-found",
-      redirect: {
-        path: "/index.html",
-      },
     },
     {
       path: "/purchases",
