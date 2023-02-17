@@ -28,7 +28,9 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       beforeEnter: AuthGuard,
       name: "not-found",
-      component: HomeView,
+      redirect: {
+        path: "/index.html",
+      },
     },
     {
       path: "/purchases",
